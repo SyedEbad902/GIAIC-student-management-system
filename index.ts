@@ -21,7 +21,7 @@ class Students {
   payFee(amount: number) {
     if (amount < this.balance) {
       this.balance -= amount;
-      console.log(`$${amount} Fee paid successfully for ${this.name}`);
+      console.log(`$${amount} Fee paid successfully for ${this.name} current balance : ${this.balance} `);
     } else {
       console.log(`Not enough balance $${this.balance}`);
     }
@@ -32,7 +32,7 @@ class Students {
     console.log(`ID : ${this.id}`);
     console.log(`Name : ${this.name}`);
     console.log(`Courses : ${this.courses}`);
-    console.log(`Balance : ${this.id}`);
+    console.log(`Balance : ${this.balance}`);
   }
 }
 
@@ -86,3 +86,94 @@ class StudentManager {
     }
   }
 }
+
+async function main() {
+  console.log(`Welcome to Student Management System`);
+  console.log(`=======================================`);
+  let student_manager = new StudentManager();
+  while (true) {
+    let choice = await inquirer.prompt([
+      {
+        name: "choice",
+        type: "list",
+        message: "Select an option",
+        choices: [
+          { name: "Add Student", value: "addStudent" },
+          { name: "Enroll Student", value: "enroll" },
+          { name: "View Student Balance Cash", value: "view balance" },
+          { name: "Pay Fee", value: "payfee" },
+          { name: "View Status", value: "viewstatus" },
+          { name: "Exit", value: "exit" },
+        ],
+      },
+    ]);
+    switch (choice.choice) {
+      case "addStudent":
+        let stdName = await inquirer.prompt([
+          {
+            name: "name",
+            type: "input",
+            message: "Enter Student Name",
+          },
+        ]);
+        student_manager.addStudents(stdName.name);
+        break;
+
+      case "enroll":
+        let courseName = await inquirer.prompt([
+          {
+            name: "stdId",
+            type: "number",
+            message: "Enter Student ID",
+          },
+          {
+            name: "courseName",
+            type: "input",
+            message: "Enter Course Name",
+          },
+        ]);
+        student_manager.enrollStudent(courseName.stdId, courseName.courseName);
+        break;
+
+      case "view balance":
+        let stdBalance = await inquirer.prompt([
+          {
+            name: "stdId",
+            type: "number",
+            message: "Enter Student Id",
+          },
+        ]);
+        student_manager.viewStudentBalance(stdBalance.stdId);
+        break;
+      case "payfee":
+        let Payfee = await inquirer.prompt([
+          {
+            name: "stdId",
+            type: "number",
+            message: "Enter Student ID",
+          },
+          {
+            name: "amount",
+            type: "number",
+            message: "Enter Amount",
+          },
+        ]);
+        student_manager.payStdFee(Payfee.stdId, Payfee.amount);
+        break;
+      case "viewstatus":
+        let showStatus = await inquirer.prompt([
+          {
+            name: "stdId",
+            type: "number",
+            message: "Enter Student Id",
+          },
+        ]);
+        student_manager.showStudentStatus(showStatus.stdId);
+        break;
+      case "exit":
+        console.log("Exiting...");
+        process.exit();
+    }
+  }
+}
+main();
